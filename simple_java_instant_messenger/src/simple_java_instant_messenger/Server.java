@@ -1,15 +1,66 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 package simple_java_instant_messenger;
 
+import java.io.*; //For streams
+import java.net.*; //For sockets and networking
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 /**
- *
- * @author Niall
+This program will sit on a public server that anyone can access.
  */
-public class Server {
-
+public class Server extends JFrame{
+    private JTextField userText; //For writing messages
+    private JTextArea chatWindow; //Displays message area
+    private ObjectOutputStream output; //Output stream to connect to something(file or socket)
+    private ObjectInputStream input; //inout stream to recieve data
+    private ServerSocket server; //Initalize the socket
+    private Socket connection; //This will be the socket that java connects the user to so they can chat
+    
+    //constructor that creates a GUI for the user to use
+    public Server(){
+        super("Awesome instant messenger!");
+        userText = new JTextField();
+        userText.setEditable(false); //We disable this so that we can't type in anything by default. When we connect a chat to another user we will change this.
+        userText.addActionListener(
+                new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //Send the messaage
+                sendMessage(e.getActionCommand()); //e.getActionCommand() is the message
+                userText.setText(""); //Change to nothing after enter
+            }
+        }
+        );
+        
+        add(userText, BorderLayout.NORTH);
+        
+        chatWindow = new JTextArea();
+        add(new JScrollPane(chatWindow));
+        setSize(300, 150);
+        setVisible(true);
+    }
+    
+    //Set up and run the server
+    public void startRunning(){
+        try{
+            server = new ServerSocket(6789, 100); //port number and how many people can wait to access this ServerSocket. If there is too many people then the server will crash so we limit it to 100. This is technically called the q length or backlog.
+            
+            while(true){ //runs forever
+                try{
+                    //connect and have conversation
+                    waitForConnection(); //Wait for someone to connect to our server
+                    setupStreams(); //set up input and output
+                    whileChatting(); //Allows us to send messages back and forth while we chat
+                }catch(EOFException eOFException){ //EOFException means end of stream
+                    showMessage("\n Server ended the connection! ");
+                    eOFException.printStackTrace();
+                }finally{
+                    closeCrap(); //Close all sockets etc
+                }
+            }
+            
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
 }
