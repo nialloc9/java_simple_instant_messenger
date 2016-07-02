@@ -79,4 +79,23 @@ public class Server extends JFrame{
         //Can't use flush on input because only the stream to the user can flush. We can only flush on the server output and not on the users input. Basically we can make sure we push all the data to them but we can't go in and grab it from their computer.
         showMessage("\n Streams are now set up! \n");
     }
+    
+    //During the chat conversation
+    private void whileChatting() throws IOException{
+        String message = "You are now connected!";
+        sendMessage(message); //Send message to screen
+        ableToType(true); //Change userText setEditable to true
+        do{
+            //Have convo while clients are active
+            try{
+                message = (String) input.readObject(); //Read the object coming from the input stream coming from client. Cast it to a string.
+                showMessage("\n" + message);
+            }catch(ClassNotFoundException ex){
+                //This exception will usually only be caught if the user is trying send other objects. Usually they will be sending a string.
+                //If they are not they might be trying to hack us.
+                showMessage("\n can't figure out what user sent. Wierd object sent.");
+                ex.printStackTrace();
+            }
+        }while(!message.equals("CLIENT - END"));
+    }
 }
