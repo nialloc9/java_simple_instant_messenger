@@ -130,13 +130,11 @@ public class Server extends JFrame{
     //this updates the chatWindow to show new messages
     private void showMessage(final String message){
         /*
-<<<<<<< HEAD:simple_java_instant_messenger/src/server/Server.java
         Because swing is not thread safe we nee to use SwingUtilities.invokeLater() to update the GUI. We schedule this to update the 
         GUI on the awt thread so as not to have problems with thread safty.
-=======
+
         We are on the network thread so we need to update out GUI. But swing is not thread safe so we must schedule the update to 
         happen on the awt thread. We do this using SwingUtilities.invokeLater()
->>>>>>> 1.0.1:simple_java_instant_messenger/src/simple_java_instant_messenger/Server.java
         */
         SwingUtilities.invokeLater( //This creates a thread that will update the GUI so we don't need to close the GUI and create a new one.
                 new Runnable() {
@@ -147,13 +145,8 @@ public class Server extends JFrame{
         }
         );
     }
-    
-<<<<<<< HEAD:simple_java_instant_messenger/src/server/Server.java
-        //Allow user to type into text box
-=======
-    //Allow user to type into text box
->>>>>>> 1.0.1:simple_java_instant_messenger/src/simple_java_instant_messenger/Server.java
     private void ableToType(final boolean tof){
+      
         SwingUtilities.invokeLater( //Again we are updating the GUI so we need SwingUtilities.invokeLater
                 new Runnable(){
                     @Override
