@@ -98,4 +98,37 @@ public class Server extends JFrame{
             }
         }while(!message.equals("CLIENT - END"));
     }
+    
+    //Close all the streams and sockets after user is done chatting. If we don't we will have loads of empty sockets and this will eat the memory. Waste of server resources.
+    private void closeCrap(){
+        showMessage("\n closing connections... \n");
+        ableToType(false); //Stop users ability to stop while shutting down
+        
+        try{
+            //close streams
+            output.close();
+            input.close();
+            //close socket
+            connection.close();
+        }catch(IOException ex){
+            ex.printStackTrace();
+        }
+    }
+    
+    //send a message to the client. sendMessage() sends a message like an error message or a "connecting..." message. showMessage() shows messages from the clients to each other.
+    private void sendMessage(String message){
+        try{
+            output.writeObject("SERVER - " + message); //Sends object ot output stream. Because these are things that the server sends and not another user we put SERVER and not a username.
+            output.flush(); //Remember good practice to flush after outputing data to the client
+            showMessage("\n SERVER" + message); //We now need to output the message to the user
+        }catch(IOException ex){ //Becuase we are sending info across a stream we have IOExeptions
+            chatWindow.append("\n ERROR: CANT SEND MESSAGE.");
+            ex.printStackTrace();
+        }
+    }
+    
+    //shows the message on the GUI
+    private void showMessage(String message){
+        
+    }
 }
