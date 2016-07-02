@@ -63,4 +63,20 @@ public class Server extends JFrame{
             ex.printStackTrace();
         }
     }
+    
+    //wait for connection, then display connection information
+    private void waitForConnection() throws IOException{
+        showMessage("Waiting for someone to connect.. \n");
+        connection = server.accept(); //Once someone asks to connect with us this will accept it and put that connection on a socket.
+        showMessage("Now connectioed to "+ connection.getInetAddress().getHostName()); //getInetAddress() returns ip that the socket is connected to or null if not connected. getHostName() gets host name of ip address
+    }
+    
+    //set up the streams to send and recieve data
+    private void setUpStreams() throws IOException{
+        output = new ObjectOutputStream(connection.getOutputStream()); //connection.getOutputStream() gets the output stream that is going from the server to the user.
+        output.flush(); //We don't want the buffer to try keep data but because we want the whole message sent together so we need to flush it. GOOD PRACTICE to do this.
+        input = new ObjectInputStream(connection.getInputStream()); //connection.getInputStream() gets the input stream going from the computer to the server.
+        //Can't use flush on input because only the stream to the user can flush. We can only flush on the server output and not on the users input. Basically we can make sure we push all the data to them but we can't go in and grab it from their computer.
+        showMessage("\n Streams are now set up! \n");
+    }
 }
