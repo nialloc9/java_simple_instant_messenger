@@ -127,8 +127,30 @@ public class Server extends JFrame{
         }
     }
     
-    //shows the message on the GUI
-    private void showMessage(String message){
-        
+    //this updates the chatWindow to show new messages
+    private void showMessage(final String message){
+        /*
+        We are on the network thread so we need to update out GUI. But swing is not thread safe so we must schedule the update to 
+        happen on the awt thread. We do this using SwingUtilities.invokeLater()
+        */
+        SwingUtilities.invokeLater( //This creates a thread that will update the GUI so we don't need to close the GUI and create a new one.
+                new Runnable() {
+            @Override
+            public void run() {
+                chatWindow.append(message); //Add message to end of document.
+            }
+        }
+        );
+    }
+    
+    //Allow user to type into text box
+    private void ableToType(final boolean tof){
+        SwingUtilities.invokeLater( //Again we are updating the GUI so we need SwingUtilities.invokeLater
+                new Runnable(){
+                    @Override
+                    public void run(){
+                        userText.setEditable(tof);
+                    }
+                });
     }
 }
